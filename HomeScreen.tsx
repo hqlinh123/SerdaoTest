@@ -1,17 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   ActivityIndicator,
   Button,
   FlatList,
+  SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {useTransactions} from './TransactionContext';
+import {useBeneficiaries} from './CreateBeneficiaryContext';
 
 const HomeScreen = ({navigation}) => {
   const {transactions, balance, isLoading} = useTransactions();
-
+  const {beneficiaries} = useBeneficiaries();
+  const [selectedBeneficiaries, setSelectedBeneficiaries] = useState();
+  console.log('beneficiaries', beneficiaries);
   const renderItem = ({item}) => (
     <View style={styles.item}>
       <Text style={styles.itemText}>Transaction ID: {item.id}</Text>
@@ -32,15 +37,34 @@ const HomeScreen = ({navigation}) => {
       </View>
     );
   }
-  return (
-    <View style={styles.container}>
-      <Text style={styles.balanceText}>
-        Current Balance: ${balance > 0 ? balance.toFixed(2) : 0}
-      </Text>
-      <Button
-        title="Add Transaction"
-        onPress={() => navigation.navigate('Transaction')}
+
+  const onPressItemBeneficiaries = item => setSelectedBeneficiaries(item);
+
+  const renderItemBeneficiaries = ({item}) => {
+    const selectedItem = item?.id === selectedBeneficiaries?.id;
+    return (
+      <TouchableOpacity
+        style={[styles.item, selectedItem && {borderColor: 'red'}]}
+        onPress={() => onPressItemBeneficiaries(item)}>
+        <Text style={styles.itemText}>First Name: {item.firstname}</Text>
+        <Text style={styles.itemText}>Last Name: {item.lastname}</Text>
+        <Text style={styles.itemText}>IBAN: {item?.iban}</Text>
+      </TouchableOpacity>
+    );
+  };
+  const renderBeneficiariesList = () => {
+    return (
+      <FlatList
+        data={beneficiaries}
+        keyExtractor={item => item.id.toString()}
+        renderItem={renderItemBeneficiaries}
+        contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
       />
+    );
+  };
+  const renderTransactionList = () => {
+    return (
       <FlatList
         data={transactions}
         keyExtractor={item => item.id.toString()}
@@ -48,7 +72,32 @@ const HomeScreen = ({navigation}) => {
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    );
+  };
+  return (
+    <SafeAreaView style={styles.container}>
+      <View>
+        <Text style={styles.balanceText}>
+          Current Balance: ${balance > 0 ? balance.toFixed(2) : 0}
+        </Text>
+        {beneficiaries?.length > 0 ? renderBeneficiariesList() : null}
+        <Button
+          title="Add Beneficiary"
+          onPress={() => navigation.navigate('CreateBeneficiary')}
+        />
+        {transactions?.length > 0 ? renderTransactionList() : null}
+        {selectedBeneficiaries && (
+          <Button
+            title="Add Transaction"
+            onPress={() =>
+              navigation.navigate('Transaction', {
+                data: selectedBeneficiaries,
+              })
+            }
+          />
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 

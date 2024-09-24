@@ -9,11 +9,15 @@ import {
 } from 'react-native';
 import {useTransactions} from './TransactionContext';
 import {validateIBAN, validateName} from './helpers/validate';
+import {useRoute} from '@react-navigation/native';
 
 const TransactionScreen = ({navigation}) => {
+  const {data} = useRoute()?.params;
+  const recipientName = `${data?.firstname} ${data?.lastname}`;
+  const ibanNumber = data?.iban;
   const [amount, setAmount] = useState('');
-  const [name, setName] = useState('');
-  const [iban, setIban] = useState('');
+  const [name, setName] = useState(recipientName ?? '');
+  const [iban, setIban] = useState(ibanNumber ?? '');
   const {addTransaction, balance} = useTransactions();
 
   const handleTransaction = () => {
