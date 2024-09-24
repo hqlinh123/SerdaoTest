@@ -21,7 +21,7 @@ Please create a new Git repository to store both the test first version and your
 
 We hope that you will enjoy taking this test, best of luck!
 
-# Run project on io and android
+# Run project on ios and android
 - yarn install
 - cd ios && pod install
 - yarn ios
