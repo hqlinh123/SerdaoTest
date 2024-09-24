@@ -20,3 +20,9 @@ Note: you have free rein in how you want to implement this test, give it you bes
 Please create a new Git repository to store both the test first version and your modifications. Document all the commands needed to install and launch this project, excluding the installation of any external SDKs/platforms, our focus will remain strictly on this project.
 
 We hope that you will enjoy taking this test, best of luck!
+
+# Run project on io and android
+- yarn install
+- cd ios && pod install
+- yarn ios
+- yarn android
