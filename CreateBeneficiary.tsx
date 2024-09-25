@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {validateIBAN} from './helpers/validate';
+import {validateIBAN, validateName} from './helpers/validate';
 import {useBeneficiaries} from './CreateBeneficiaryContext';
 
 const CreateBeneficiary: React.FC = ({navigation}) => {
@@ -22,6 +22,12 @@ const CreateBeneficiary: React.FC = ({navigation}) => {
 
     if (!firstName) newErrors.firstName = 'First name is required';
     if (!lastName) newErrors.lastName = 'Last name is required';
+    if (!validateName(firstName)) {
+      newErrors.firstName = 'First name is invalid';
+    }
+    if (!validateName(lastName)) {
+      newErrors.lastName = 'Last name is invalid';
+    }
     if (!iban) {
       newErrors.iban = 'IBAN is required';
     } else if (!validateIBAN(iban)) {
